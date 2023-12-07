@@ -1,0 +1,12 @@
+# ## Delete contact
+# DELETE http://localhost:3001/api/persons/2
+# Content-Type: application/json
+
+## Add contact
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "",
+    "number": ""
+}
