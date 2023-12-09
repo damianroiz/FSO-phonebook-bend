@@ -1,14 +1,13 @@
 const express = require("express");
-const morgan = require("morgan"); //// 3.7 
-const cors = require("cors")
-
+const morgan = require("morgan"); //// 3.7
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(express.static("dist"));
 
 // app.use(morgan("combined"));
-app.use(cors())
-
+app.use(cors());
 
 //////////////////////////
 ////// 3.8
@@ -91,7 +90,7 @@ app.post("/api/persons", (request, response) => {
   const body = request.body;
 
   ///////////////// 3.6
- ////////////// error handlers
+  ////////////// error handlers
   if (persons.find((person) => person.name === body.name)) {
     return response.status(400).json({
       error: "name must be unique",
