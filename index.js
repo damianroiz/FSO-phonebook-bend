@@ -23,7 +23,7 @@ app.use(
 );
 
 //////////// 3.1
-let persons = [
+const persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -45,6 +45,7 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
+
 
 //////////// 3.1
 app.get("/api/persons", (request, response) => {
