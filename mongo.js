@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-
-
+////////////////////////////////////3.12
 const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dyibbyi.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
@@ -10,8 +9,8 @@ mongoose.connect(url).then(() => {
     name: String,
     number: String,
   });
-  const Person = mongoose.model("Person", personSchema);
 
+  const Person = mongoose.model("Person", personSchema);
   const persons = [
     {
       name: "Arto Hellas",
@@ -31,63 +30,43 @@ mongoose.connect(url).then(() => {
     },
   ];
 
-/**
- * Modifying the script to handle command line arguments
- * 
-const password = process.argv[2];
-const name = process.argv[3];
-const number = process.argv[4];
+  const password = process.argv[2];
+  const name = process.argv[3];
+  const number = process.argv[4];
 
-if (process.argv.length < 5) {
-  // If not enough arguments were provided, find all persons and log them
-  Person.find({}).then(result => {
-    result.forEach(person => {
-      console.log(person);
-    });
-    mongoose.connection.close();
-  });
-} else {
-  // If name and number were provided, add or update the person
-  const person = { name, number };
+  if (name && number) {
+    const person = { name, number };
 
-  Person.findOneAndUpdate(
-    { name: person.name },
-    { $set: person },
-    { upsert: true, new: true, runValidators: true }
-  )
-  .then((updatedPerson) => {
-    console.log(`Added or updated ${updatedPerson.name} number ${updatedPerson.number}`);
-    mongoose.connection.close();
-  })
-  .catch((error) => {
-    console.log(error);
-    mongoose.connection.close();
-  });
-}
- */
-
-  const promises = persons.map((person) => {
-    return Person.findOneAndUpdate(
+    Person.findOneAndUpdate(
       { name: person.name },
       { $set: person },
       { upsert: true, new: true, runValidators: true }
-    );
-  });
+    )
+      .then((updatedPerson) => {
+        console.log(
+          `Added ${updatedPerson.name} number ${updatedPerson.number} to Phonebook`
+        );
+        console.log(password);
+        mongoose.connection.close();
+      })
+      .catch((error) => {
+        console.log(error);
+        mongoose.connection.close();
+      });
+  }
 
-  Promise.all(promises)
-    .then((updatedPersons) => {
-      console.log(updatedPersons);
-      mongoose.connection.close();
-    })
-    .catch((error) => {
-      console.log(error);
-      mongoose.connection.close;
-    });
-
-//   Person.find({}).then(result => {
-//       result.forEach(person => {
-//         console.log(person)
-//       })
-//       mongoose.connection.close()
-//     })
+  if (password) {
+    Person.find({})
+      .then((result) => {
+        console.log("Phonebook:");
+        result.forEach((person) => {
+          console.log(`${person.name} ${person.number}`);
+        });
+        mongoose.connection.close();
+      })
+      .catch((error) => {
+        console.log(error);
+        mongoose.connection.close();
+      });
+  }
 });
