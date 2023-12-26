@@ -4,7 +4,7 @@ require("dotenv").config();
 const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dyibbyi.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
-mongoose.connect(url).then(() => {
+mongoose.connect(url).then(async () => {
   const personSchema = new mongoose.Schema({
     name: String,
     number: String,
@@ -30,43 +30,36 @@ mongoose.connect(url).then(() => {
     },
   ];
 
-  const password = process.argv[2];
-  const name = process.argv[3];
-  const number = process.argv[4];
+  const [password, name, number] = process.argv.slice(2);
 
   if (name && number) {
     const person = { name, number };
 
-    Person.findOneAndUpdate(
-      { name: person.name },
-      { $set: person },
-      { upsert: true, new: true, runValidators: true }
-    )
-      .then((updatedPerson) => {
-        console.log(
-          `Added ${updatedPerson.name} number ${updatedPerson.number} to Phonebook`
-        );
-        console.log(password);
-        mongoose.connection.close();
-      })
-      .catch((error) => {
-        console.log(error);
-        mongoose.connection.close();
-      });
+    try {
+      const updatedPerson = await Person.findOneAndUpdate(
+        { name: person.name },
+        { $set: person },
+        { upsert: true, new: true, runValidators: true }
+      );
+      console.log(
+        `Added ${updatedPerson.name} number ${updatedPerson.number} to Phonebook`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    mongoose.connection.close();
   }
 
-  if (password) {
-    Person.find({})
-      .then((result) => {
-        console.log("Phonebook:");
-        result.forEach((person) => {
-          console.log(`${person.name} ${person.number}`);
-        });
-        mongoose.connection.close();
-      })
-      .catch((error) => {
-        console.log(error);
-        mongoose.connection.close();
+  if (password && !name || !number) {
+    try {
+      const result = await Person.find({});
+      console.log("Phonebook:");
+      result.forEach((person) => {
+        console.log(`${person.name} ${person.number}`);
       });
+    } catch (error) {
+      console.log(error);
+    }
   }
+  mongoose.connection.close();
 });
