@@ -119,7 +119,7 @@ app.get("/api/persons/:id", (request, response) => {
   // } else {
   //   response.status(404).end();
   // }
-  Note.findById(request.params.id).then((person) => {
+  Person.findById(request.params.id).then((person) => {
     response.json(person)
   })
 });
