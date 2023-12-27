@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 ////////////////////////////////////3.12
-const url = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dyibbyi.mongodb.net/?retryWrites=true&w=majority`;
+
+const url = process.env.MONGODB_URI
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url).then(async () => {
@@ -11,26 +12,26 @@ mongoose.connect(url).then(async () => {
   });
 
   const Person = mongoose.model("Person", personSchema);
-  const persons = [
-    {
-      name: "Arto Hellas",
-      number: "040-123456",
-    },
-    {
-      name: "Ada Lovelace",
-      number: "39-44-5323523",
-    },
-    {
-      name: "Dan Abramov",
-      number: "12-43-234345",
-    },
-    {
-      name: "Mary Poppendieck",
-      number: "39-23-6423122",
-    },
-  ];
+  // const persons = [
+  //   {
+  //     name: "Arto Hellas",
+  //     number: "040-123456",
+  //   },
+  //   {
+  //     name: "Ada Lovelace",
+  //     number: "39-44-5323523",
+  //   },
+  //   {
+  //     name: "Dan Abramov",
+  //     number: "12-43-234345",
+  //   },
+  //   {
+  //     name: "Mary Poppendieck",
+  //     number: "39-23-6423122",
+  //   },
+  // ];
 
-  const [password, name, number] = process.argv.slice(2);
+
 
   if (name && number) {
     const person = { name, number };

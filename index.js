@@ -1,13 +1,17 @@
 const express = require("express");
 const morgan = require("morgan"); //// 3.7
 const cors = require("cors");
-
 const app = express();
-app.use(express.json());
-app.use(express.static("dist"));
+const Person = require("./models/Person");
 
 // app.use(morgan("combined"));
 app.use(cors());
+app.use(express.json());
+app.use(express.static("dist"));
+
+require("dotenv").config();
+
+const [password, name, number] = process.argv.slice(2);
 
 //////////////////////////
 ////// 3.8
@@ -23,33 +27,34 @@ app.use(
 );
 
 //////////// 3.1
-const persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+// const persons = [
+//   {
+//     id: 1,
+//     name: "Arto Hellas",
+//     number: "040-123456",
+//   },
+//   {
+//     id: 2,
+//     name: "Ada Lovelace",
+//     number: "39-44-5323523",
+//   },
+//   {
+//     id: 3,
+//     name: "Dan Abramov",
+//     number: "12-43-234345",
+//   },
+//   {
+//     id: 4,
+//     name: "Mary Poppendieck",
+//     number: "39-23-6423122",
+//   },
+// ];
 
-
-//////////// 3.1
+//////////// 3.13
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
 });
 
 ////////// 3.2
@@ -60,35 +65,17 @@ app.get("/info", (request, response) => {
   );
 });
 
-////////////// 3.3
-app.get("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
-  const person = persons.find((person) => person.id === id);
 
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
-});
-
-/////////////////////// 3.4
-app.delete("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
-  persons = persons.filter((p) => p.id !== id);
-
-  response.status(204).end();
-});
 
 /////////////// 3.5
 
 app.post("/api/persons", (request, response) => {
-  let id;
-  do {
-    id = Math.floor(Math.random() * 100000) + 1;
-  } while (persons.find((person) => person.id === id));
-
   const body = request.body;
+  // let id;
+  // do {
+  //   id = Math.floor(Math.random() * 100000) + 1;
+  // } while (persons.find((person) => person.id === id));
+
 
   ///////////////// 3.6
   ////////////// error handlers
@@ -108,39 +95,44 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  const newPerson = { id, ...body };
-  persons.push(newPerson);
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
 
-  response.json(newPerson);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson)
+  })
+  // const newPerson = { id, ...body };
+  // persons.push(newPerson);
+
+  // response.json(newPerson);
 });
 
-// old solution for 3.5
-// const idGenerator = () => {
-//   const maxId = persons.length > 0 ? Math.max(...persons.map((p) => p.id)) : 0;
-//   return maxId + 1;
-// };
+////////////// 3.3
+app.get("/api/persons/:id", (request, response) => {
+  // const id = +request.params.id;
+  // const person = persons.find((person) => person.id === id);
 
-// app.post("/api/persons", (request, response) => {
-//   const body = request.body;
+  // if (person) {
+  //   response.json(person);
+  // } else {
+  //   response.status(404).end();
+  // }
+  Note.findById(request.params.id).then((person) => {
+    response.json(person)
+  })
+});
 
-//   if (!body.name || !body.number) {
-//     return response.status(400).json({
-//       error: "content missing",
-//     });
-//   }
+/////////////////////// 3.4
+app.delete("/api/persons/:id", (request, response) => {
+  const id = +request.params.id;
+  persons = persons.filter((p) => p.id !== id);
+  response.status(204).end();
+});
 
-//   const person = {
-//     id: idGenerator(),
-//     name: body.name,
-//     number: body.number,
-//   };
 
-//   persons = persons.concat(person);
-
-//   response.json(person);
-// });
-
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
