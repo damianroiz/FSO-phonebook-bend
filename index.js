@@ -27,28 +27,28 @@ app.use(
 );
 
 //////////// 3.1
-// const persons = [
-//   {
-//     id: 1,
-//     name: "Arto Hellas",
-//     number: "040-123456",
-//   },
-//   {
-//     id: 2,
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//   },
-//   {
-//     id: 3,
-//     name: "Dan Abramov",
-//     number: "12-43-234345",
-//   },
-//   {
-//     id: 4,
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//   },
-// ];
+const persons = [
+  // {
+  //   id: 1,
+  //   name: "Arto Hellas",
+  //   number: "040-123456",
+  // },
+  // {
+  //   id: 2,
+  //   name: "Ada Lovelace",
+  //   number: "39-44-5323523",
+  // },
+  // {
+  //   id: 3,
+  //   name: "Dan Abramov",
+  //   number: "12-43-234345",
+  // },
+  // {
+  //   id: 4,
+  //   name: "Mary Poppendieck",
+  //   number: "39-23-6423122",
+  // },
+];
 
 //////////// 3.13
 app.get("/api/persons", (request, response) => {
@@ -65,17 +65,20 @@ app.get("/info", (request, response) => {
   );
 });
 
-
-
 /////////////// 3.5
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", async (request, response) => {
   const body = request.body;
+  const persons = await Person.find({}).then((persons) =>
+    response.json(persons)
+  );
   // let id;
   // do {
   //   id = Math.floor(Math.random() * 100000) + 1;
   // } while (persons.find((person) => person.id === id));
-
+  // Person.find({}).then((persons) => {
+  //   response.json(persons);
+  // });
 
   ///////////////// 3.6
   ////////////// error handlers
@@ -97,12 +100,12 @@ app.post("/api/persons", (request, response) => {
 
   const person = new Person({
     name: body.name,
-    number: body.number
-  })
+    number: body.number,
+  });
 
   person.save().then((savedPerson) => {
-    response.json(savedPerson)
-  })
+    response.json(savedPerson);
+  });
   // const newPerson = { id, ...body };
   // persons.push(newPerson);
 
@@ -120,8 +123,8 @@ app.get("/api/persons/:id", (request, response) => {
   //   response.status(404).end();
   // }
   Person.findById(request.params.id).then((person) => {
-    response.json(person)
-  })
+    response.json(person);
+  });
 });
 
 /////////////////////// 3.4
@@ -130,7 +133,6 @@ app.delete("/api/persons/:id", (request, response) => {
   persons = persons.filter((p) => p.id !== id);
   response.status(204).end();
 });
-
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
