@@ -3,6 +3,7 @@ require("dotenv").config();
 ////////////////////////////////////3.12
 
 const url = process.env.MONGODB_URI
+const [password, name, number] = process.argv.slice(2);
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url).then(async () => {
@@ -31,8 +32,7 @@ mongoose.connect(url).then(async () => {
   //   },
   // ];
 
-
-
+  
   if (name && number) {
     const person = { name, number };
 

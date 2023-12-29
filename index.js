@@ -27,28 +27,28 @@ app.use(
 );
 
 //////////// 3.1
-const persons = [
-  // {
-  //   id: 1,
-  //   name: "Arto Hellas",
-  //   number: "040-123456",
-  // },
-  // {
-  //   id: 2,
-  //   name: "Ada Lovelace",
-  //   number: "39-44-5323523",
-  // },
-  // {
-  //   id: 3,
-  //   name: "Dan Abramov",
-  //   number: "12-43-234345",
-  // },
-  // {
-  //   id: 4,
-  //   name: "Mary Poppendieck",
-  //   number: "39-23-6423122",
-  // },
-];
+// const persons = [
+//   // {
+//   //   id: 1,
+//   //   name: "Arto Hellas",
+//   //   number: "040-123456",
+//   // },
+//   // {
+//   //   id: 2,
+//   //   name: "Ada Lovelace",
+//   //   number: "39-44-5323523",
+//   // },
+//   // {
+//   //   id: 3,
+//   //   name: "Dan Abramov",
+//   //   number: "12-43-234345",
+//   // },
+//   // {
+//   //   id: 4,
+//   //   name: "Mary Poppendieck",
+//   //   number: "39-23-6423122",
+//   // },
+// ];
 
 //////////// 3.13
 app.get("/api/persons", (request, response) => {
@@ -66,12 +66,12 @@ app.get("/info", (request, response) => {
 });
 
 /////////////// 3.5
-
+///////////////////// 3.14
 app.post("/api/persons", async (request, response) => {
   const body = request.body;
-  const persons = await Person.find({}).then((persons) =>
-    response.json(persons)
-  );
+  const persons = await Person.find({});
+  response.json(persons);
+
   // let id;
   // do {
   //   id = Math.floor(Math.random() * 100000) + 1;
@@ -106,17 +106,14 @@ app.post("/api/persons", async (request, response) => {
   person.save().then((savedPerson) => {
     response.json(savedPerson);
   });
-  // const newPerson = { id, ...body };
-  // persons.push(newPerson);
+  const newPerson = { id, ...body };
+  persons.push(newPerson);
 
-  // response.json(newPerson);
+  response.json(newPerson);
 });
 
 ////////////// 3.3
 app.get("/api/persons/:id", (request, response) => {
-  // const id = +request.params.id;
-  // const person = persons.find((person) => person.id === id);
-
   // if (person) {
   //   response.json(person);
   // } else {
