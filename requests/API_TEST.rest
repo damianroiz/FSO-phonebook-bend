@@ -23,6 +23,6 @@ PUT http://localhost:3001/api/persons/658a44581bf074a66fb57868
 Content-Type: application/json
 
 {
-    "name": "go",
-    "number": "798798798" 
+    "name": "Gonza",
+    "number": "1-22334455" 
 }

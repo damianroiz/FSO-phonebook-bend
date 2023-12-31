@@ -14,9 +14,7 @@ mongoose
     console.log("error connecting to MongoDB:", error.message);
   });
 
-
-
-///////// 3.19 
+///////// 3.20
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,7 +23,12 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minLength: 9,
+    minLength: 8,
+    validate: {
+      validator: (v) => {
+        return /^\d{2,3}-?\d{6,7}$/.test(v);
+      },
+    },
     required: true,
   },
 });
