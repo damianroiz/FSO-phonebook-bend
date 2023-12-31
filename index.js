@@ -25,25 +25,25 @@ app.use(
   )
 );
 
-const requestChecker = (request, response) => {
-  //// Replace response variable with response parameter
-  if (!request || !request.body) {
-    throw new Error("Request or request body is undefined");
-  }
+// const requestChecker = (request, response) => {
+//   //// Replace response variable with response parameter
+//   if (!request || !request.body) {
+//     throw new Error("Request or request body is undefined");
+//   }
 
-  const body = request.body;
+//   const body = request.body;
 
-  if ((!body.name || body.name.trim() === "") && (!body.number || body.number.trim() === "")) {
-    return response.status(400).json({ error: "Name and Number are missing" })
-  } 
-  
-  if (!body.name || body.name.trim() === "") {
-    return response.status(400).json({ error: "Name is missing" });
-  } else if (!body.number || body.number.trim() === "") {
-    return response.status(400).json({ error: "Number is missing" });
-  }
+//   if ((!body.name || body.name.trim() === "") && (!body.number || body.number.trim() === "")) {
+//     return response.status(400).json({ error: "Name and Number are missing" })
+//   }
 
-};
+//   if (!body.name || body.name.trim() === "") {
+//     return response.status(400).json({ error: "Name is missing" });
+//   } else if (!body.number || body.number.trim() === "") {
+//     return response.status(400).json({ error: "Number is missing" });
+//   }
+
+// };
 
 //////////// 3.13
 app.get("/api/persons", (request, response) => {
@@ -65,29 +65,30 @@ app.get("/info", async (request, response) => {
 
 /////////////// 3.5
 ///////////////////// 3.14
-app.post("/api/persons", async (request, response) => {
+app.post("/api/persons", async (request, response, next) => {
   const body = request.body;
-  requestChecker(request, response);
 
   const persons = await Person.find({});
-  // response.json(persons);
 
   ///////////////// 3.6
   ////////////// error handlers
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
   const person = new Person({
     name: body.name,
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 ////////////// 3.3
@@ -101,16 +102,19 @@ app.get("/api/persons/:id", (request, response, next) => {
 
 ///////// 3.17
 app.put("/api/persons/:id", (request, response, next) => {
-  const body = request.body;
-  requestChecker(request, response);
+  const { name, number } = request.body;
 
+  // const person = {
+  //   name: body.name,
+  //   number: body.number,
+  // };
 
-  const person = {
-    name: body.name,
-    number: body.number,
-  };
-
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  /////////3.19
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })

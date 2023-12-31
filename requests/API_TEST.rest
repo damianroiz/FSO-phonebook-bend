@@ -19,10 +19,10 @@ Content-Type: application/json
 }
 
 ### Update person
-PUT http://localhost:3001/api/persons/658a42a11bf074a66fb3b77f
+PUT http://localhost:3001/api/persons/658a44581bf074a66fb57868
 Content-Type: application/json
 
 {
-    "name": "",
-    "number": "" 
+    "name": "go",
+    "number": "798798798" 
 }

@@ -14,9 +14,20 @@ mongoose
     console.log("error connecting to MongoDB:", error.message);
   });
 
+
+
+///////// 3.19 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 5,
+    required: true,
+  },
+  number: {
+    type: String,
+    minLength: 9,
+    required: true,
+  },
 });
 
 personSchema.set("toJSON", {
