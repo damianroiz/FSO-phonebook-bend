@@ -1,12 +1,25 @@
-# ## Delete contact
-# DELETE http://localhost:3001/api/persons/2
-# Content-Type: application/json
+GET http://localhost:3001/api/persons/
+Content-Type: application/json
 
-## Add contact
+
+### Delete contact
+DELETE http://localhost:3001/api/persons/658e2559f54fa14447b00e30
+Content-Type: application/json
+
+### Add contact
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
+    "name": "",
+    "number": ""
+}
+
+### Update person
+PUT http://localhost:3001/api/persons/658a42a11bf074a66fb3b77f
+Content-Type: application/json
+
+{
     "name": "Damian",
-    "number": "1239685"
+    "number": " "
 }
