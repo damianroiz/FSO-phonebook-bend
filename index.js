@@ -33,11 +33,14 @@ app.get("/api/persons", (request, response) => {
 });
 
 ////////// 3.2
-app.get("/info", (request, response) => {
-  response.send(
-    `<p>Phonebook has info for ${persons.length} people</p><p>${(date =
-      new Date())}</p>`
-  );
+//////////////////// 3.18 
+app.get("/info", async (request, response) => {
+  const date = new Date();
+  await Person.find({}).then((persons) => {
+    response.send(
+      `<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`
+    );
+  });
 });
 
 /////////////// 3.5
@@ -55,21 +58,14 @@ app.post("/api/persons", async (request, response) => {
     });
   }
 
-  if (!body.content || body.content.trim() === "") {
-    return response.status(400).json({
-      error: "content missing",
-    });
-  }
-  if (!body.name || body.name.trim() === "") {
-    return response.status(400).json({
-      error: "name is missing",
-    });
-  }
-  if (!body.number || body.number.trim() === "") {
-    return response.status(400).json({
-      error: "number is missing",
-    });
-  }
+  (!body.content || body.content.trim() === "") &&
+    response.status(400).json({ error: "content missing" });
+
+  (!body.name || body.name.trim() === "") &&
+    response.status(400).json({ error: "name is missing" });
+
+  (!body.number || body.number.trim() === "") &&
+    response.status(400).json({ error: "number is missing" });
 
   const person = new Person({
     name: body.name,
@@ -90,19 +86,15 @@ app.get("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+///////// 3.17
 app.put("/api/persons/:id", (request, response, next) => {
   const body = request.body;
 
-  if (!body.name || body.name.trim() === "") {
-    return response.status(400).json({
-      error: "name is missing",
-    });
-  }
-  if (!body.number || body.number.trim() === "") {
-    return response.status(400).json({
-      error: "number is missing",
-    });
-  }
+  (!body.name || body.name.trim() === "") &&
+    response.status(400).json({ error: "name is missing" });
+
+  (!body.number || body.number.trim() === "") &&
+    response.status(400).json({ error: "number is missing" });
 
   const person = {
     name: body.name,
