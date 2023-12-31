@@ -25,6 +25,26 @@ app.use(
   )
 );
 
+const requestChecker = (request, response) => {
+  //// Replace response variable with response parameter
+  if (!request || !request.body) {
+    throw new Error("Request or request body is undefined");
+  }
+
+  const body = request.body;
+
+  if ((!body.name || body.name.trim() === "") && (!body.number || body.number.trim() === "")) {
+    return response.status(400).json({ error: "Name and Number are missing" })
+  } 
+  
+  if (!body.name || body.name.trim() === "") {
+    return response.status(400).json({ error: "Name is missing" });
+  } else if (!body.number || body.number.trim() === "") {
+    return response.status(400).json({ error: "Number is missing" });
+  }
+
+};
+
 //////////// 3.13
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
@@ -33,7 +53,7 @@ app.get("/api/persons", (request, response) => {
 });
 
 ////////// 3.2
-//////////////////// 3.18 
+//////////////////// 3.18
 app.get("/info", async (request, response) => {
   const date = new Date();
   await Person.find({}).then((persons) => {
@@ -47,8 +67,10 @@ app.get("/info", async (request, response) => {
 ///////////////////// 3.14
 app.post("/api/persons", async (request, response) => {
   const body = request.body;
+  requestChecker(request, response);
+
   const persons = await Person.find({});
-  response.json(persons);
+  // response.json(persons);
 
   ///////////////// 3.6
   ////////////// error handlers
@@ -57,15 +79,6 @@ app.post("/api/persons", async (request, response) => {
       error: "name must be unique",
     });
   }
-
-  (!body.content || body.content.trim() === "") &&
-    response.status(400).json({ error: "content missing" });
-
-  (!body.name || body.name.trim() === "") &&
-    response.status(400).json({ error: "name is missing" });
-
-  (!body.number || body.number.trim() === "") &&
-    response.status(400).json({ error: "number is missing" });
 
   const person = new Person({
     name: body.name,
@@ -89,12 +102,8 @@ app.get("/api/persons/:id", (request, response, next) => {
 ///////// 3.17
 app.put("/api/persons/:id", (request, response, next) => {
   const body = request.body;
+  requestChecker(request, response);
 
-  (!body.name || body.name.trim() === "") &&
-    response.status(400).json({ error: "name is missing" });
-
-  (!body.number || body.number.trim() === "") &&
-    response.status(400).json({ error: "number is missing" });
 
   const person = {
     name: body.name,
