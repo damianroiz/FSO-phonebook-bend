@@ -18,8 +18,8 @@ mongoose
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 5,
-    required: true,
+    minLength: [5, "Name should be at least 5 characters long"],
+    required: [true, 'Name is a required field'],
   },
   number: {
     type: String,
@@ -28,6 +28,7 @@ const personSchema = new mongoose.Schema({
       validator: (v) => {
         return /^\d{2,3}-?\d{6,7}$/.test(v);
       },
+      message: "Number format should be 10-100000 or 100-1000000",
     },
     required: true,
   },
