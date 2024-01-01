@@ -68,7 +68,7 @@ app.get("/info", async (request, response) => {
 app.post("/api/persons", async (request, response, next) => {
   const body = request.body;
 
-  const persons = await Person.find({});
+  // const persons = await Person.find({});
 
   ///////////////// 3.6
   ////////////// error handlers
@@ -143,7 +143,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: "malformatted id" });
   }
   if (error.name === "ValidationError") {
-    return response.status(400).json({error: error.message});
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
